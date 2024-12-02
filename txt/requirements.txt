@@ -1,0 +1,7 @@
+streamlit-aggrid
+sqlalchemy
+joblib
+pymysql
+streamlit-aggrid
+
+
