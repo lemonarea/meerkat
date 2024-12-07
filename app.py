@@ -105,7 +105,7 @@ def main():
         display_sidebar()
         
         # Center the image and welcome message
-        col1, col2, col3 = st.columns([1, 2, 1])
+        _, col2, _ = st.columns([1, 2, 1])
         with col2:
             st.image('wofofiles/img/meerkat.jpg', width=250)
             st.title('Meerkat')
