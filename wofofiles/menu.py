@@ -15,10 +15,10 @@ def app_menu():
     with st.sidebar:
         with st.expander("☰ Navigator", expanded=False):
             st.page_link("app.py", label="🏠︎ Home")
-            st.page_link("pages/analysis.py", label="🗒 Notebook", disabled=True)
+            st.page_link("pages/notebook.py", label="🗒 INB", disabled=True)
             st.page_link("pages/chat.py", label="🗣 Chat", disabled=True)
-            st.page_link("pages/dashboard.py", label="〽 Dashboard", disabled=True)
-            st.page_link("pages/insights.py", label="☀ Insights", disabled=True)
+            st.page_link("pages/kpis.py", label="〽 KPIs", disabled=True)
+            st.page_link("pages/review.py", label="☀ Review", disabled=True)
             st.page_link("pages/monitor.py", label="⏲ Monitor", disabled=True)
             st.page_link("pages/model.py", label="☢ Models", disabled=True)
             st.page_link("pages/report.py", label="🖨 Reports")

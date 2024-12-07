@@ -27,8 +27,6 @@ st.set_page_config(
 connection_string = f"mysql+pymysql://{username}:{password}@{host}:{port}/{database}"
 engine = create_engine(connection_string, echo=True)
 
-# the main menu
-app_menu()
 
 # Function to check user access
 def user_has_access(user_code, section_name):
@@ -80,8 +78,19 @@ def display_sales_report():
     if user_has_access(current_user_code, "Sales"):
         try:
             with engine.connect() as connection:
-                # Get report names
-                result = connection.execute(text("SELECT Pagename FROM pages WHERE PageRef LIKE 'R_S%'"))
+                # Get report names with page-level permission check
+                result = connection.execute(text("""
+                    SELECT DISTINCT p.Pagename 
+                    FROM pages p
+                    JOIN access_control ac ON p.PageRef = ac.PageRef
+                    WHERE p.PageRef LIKE 'R_S%'
+                    AND (ac.UserCode = :user_code 
+                        OR ac.GroupCode IN (
+                            SELECT GroupCode 
+                            FROM access_control 
+                            WHERE UserCode = :user_code AND GroupCode IS NOT NULL
+                        ))
+                """), {"user_code": current_user_code})
                 reports = [row[0] for row in result]
                 
                 # Create sidebar selection
@@ -94,8 +103,19 @@ def display_sales_report():
                         key="report_selectbox_1"
                     )
 
-                # Get page references
-                result = connection.execute(text("SELECT Pagename, PageRef FROM pages WHERE PageRef LIKE 'R_S%'"))
+                # Get page references with permission check
+                result = connection.execute(text("""
+                    SELECT DISTINCT p.Pagename, p.PageRef
+                    FROM pages p
+                    JOIN access_control ac ON p.PageRef = ac.PageRef
+                    WHERE p.PageRef LIKE 'R_S%'
+                    AND (ac.UserCode = :user_code 
+                        OR ac.GroupCode IN (
+                            SELECT GroupCode 
+                            FROM access_control 
+                            WHERE UserCode = :user_code AND GroupCode IS NOT NULL
+                        ))
+                """), {"user_code": current_user_code})
                 pagesidx = {row[0]: row[1] for row in result}
         except SQLAlchemyError as e:
             st.error(f"Error fetching reports: {e}")
@@ -116,21 +136,34 @@ def display_sales_report():
         else:
             st.warning("Please select a report from sidebar")
 
-# Check user access and display available sections
-if current_user_code:
-    user_sections = get_user_sections(current_user_code)
-    if "Sales" in user_sections:
-        display_sales_report()
-    elif user_sections:
-        st.info(f"You have access to the following sections: {', '.join(user_sections)}")
+
+
+# Display the MAC page if this script is run
+def main():
+    # Check if the user is logged in
+    if st.session_state.get('logged_in'):
+
+        # Sidebar with navigation options
+        with st.sidebar:
+            st.write(f"Welcome, {st.session_state['user_name']}!")
+            # the main menu
+            app_menu()
+
+        if current_user_code:
+            user_sections = get_user_sections(current_user_code)
+            if "Sales" in user_sections:
+                display_sales_report()
+            else:
+                st.warning("You do not have access to any section. Please contact the administrator.")
+        else:
+            st.warning("Please log in to access the system.")
+
     else:
-        st.warning("You do not have access to any section. Please contact the administrator.")
-else:
-    st.warning("Please log in to access the system.")
+        st.warning("You must log in to access this page.")
+        st.stop()  # Stops execution if not logged in
 
-
-
-
+if __name__ == "__main__":
+    main()
 
 
 

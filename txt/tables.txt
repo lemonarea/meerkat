@@ -42,3 +42,9 @@ CREATE TABLE `access_control` (
   CONSTRAINT `access_control_ibfk_3` FOREIGN KEY (`SectionCode`) REFERENCES `sections` (`SectionCode`),
   CONSTRAINT `access_control_ibfk_4` FOREIGN KEY (`PageRef`) REFERENCES `pages` (`PageRef`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
+
+
+
+

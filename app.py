@@ -80,7 +80,7 @@ def login():
     st.text_input("Password", type="password", key='login_password')
     
     # Login button with on_click callback
-    st.button("**🗝**", on_click=login_action)
+    st.button("**➜**", on_click=login_action)
 
 # Display the sidebar 
 def display_sidebar():
@@ -88,7 +88,7 @@ def display_sidebar():
     with st.sidebar:
 
         # Display the user name in the sidebar
-        st.write(f"Welcome, {st.session_state['user_name']}!")
+        st.write(f"**Welcome**, {st.session_state['user_name']}")
 
         # the main menu
         app_menu()
@@ -104,9 +104,12 @@ def main():
         # Show the sidebar and pages if logged in
         display_sidebar()
         
-        # page welcome message
-        st.title('Meerkat')
-        st.write("Designed for monitoring and analyzing business data.")
+        # Center the image and welcome message
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            st.image('wofofiles/img/meerkat.jpg', width=250)
+            st.title('Meerkat')
+            st.markdown("<p style='color:#A79644; font-size:14px; font-weight:bold; text-align:left;'>Designed for monitoring and analyzing business data.</p>", unsafe_allow_html=True)
     else:
         # Show login form if not logged in
         login()
