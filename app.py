@@ -3,6 +3,8 @@ import streamlit as st
 import hashlib
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
+import sys
+print(sys.executable)
 
 # local imports
 # import the page title
